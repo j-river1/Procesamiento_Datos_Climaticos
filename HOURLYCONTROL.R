@@ -432,47 +432,7 @@ plot_original_aftercleaning <- function (originaldata, aftercleaningdata, title,
     
 }
 
-#caloriesm2_to_wattm2 converts calories per meter square to watts per centimeter square.
-#Arguments: -dateofday: Date of day  
-#           -delaytime: Arrival time of signal to station (minutes)
-#           -maximum_day: maximun radiation solar per day
-#           -hour: hour of signal (decimal)
-#Return:    -variable in terms of watts per meter square
-#Units for solar irridance 
 
-caloriesm2_to_wattm2 <- function(dateofday, lat, long, timezo, maximum_day, delaytime, hour)
-{
-    #hour_solarnoon_sunrise <- function (day, lat, long, timezo, typeofhour) 
-    hour_sunrise <- hour_solarnoon_sunrise(dateofday, lat, long, timezo, "sunrise")
-    hour_noon <- hour_solarnoon_sunrise(dateofday, lat, long, timezo, "solarnoon")
-    
-    #Convert to number 
-    hour_sunrise <- hour_to_number (hour_sunrise)
-    hour_noon <- hour_to_number (hour_noon)
-    
-    #Parabola watts curve
-    watts_curve <- function (x) {parabola_per_day (hour_noon, maximum_day, hour_sunrise, 0, x)}
-    
-    #Delay Time in hour
-    delaytime_hour <- delaytime/60
-    
-    #Limits of integral
-    limit_inf <- hour - delaytime_hour
-    limit_sup <- hour
-    
-    joules_m2 <- integrate(watts_curve, lower = limit_inf, upper = limit_sup)
-    joules_m2 <- joules_m2$value
-    
-    #Multiply by seconds in one hour
-    joules_m2 <- joules_m2*3600
-    
-    #meter sqaure to square centimeters
-    watts_cm2 <- joules_m2*10000
-    
-    
-    return(watts_cm2)
-    
-}
 
 #hour_to_number converts hours into number between 0 and 23
 #-Arguments: hourformat: Hour in format character 
