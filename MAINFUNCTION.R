@@ -6,6 +6,21 @@ source("CONVERTHOURLYTODAILY.R")
 setwd("D:/OneDrive - CGIAR/GitHub/Nuevo Codigo Clima/Datos_Sonora/Datos")
 setwd("C:/Users/JCRIVERA/Documents/Codigo_Nuevo_Clima/Datos/Datos_Prueba")
 
+#Create folders
+mainDir <- getwd()
+dir.create(file.path(mainDir, "Orginal_Data"), showWarnings = FALSE)
+dir.create(file.path(mainDir, "AfterHourlyControl_Data"), showWarnings = FALSE)
+dir.create(file.path(mainDir, "AfterDailyControl_Data"), showWarnings = FALSE)
+dir.create(file.path(mainDir, "RandomForest"), showWarnings = FALSE)
+dir.create(file.path(mainDir, "Rmawgen"), showWarnings = FALSE)
+dir.create(file.path(mainDir, "Graphics"), showWarnings = FALSE)
+dir.create(file.path(mainDir, "Results"), showWarnings = FALSE)
+dir.create(file.path(mainDir, "Final_Data"), showWarnings = FALSE)
+
+
+
+
+
 #Restrictions as data frame
 Variables <- c("Vmin", "Vmax")
 TX <- c(41,0)
