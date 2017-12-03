@@ -244,7 +244,7 @@ SR_hourlytodaily <- function (data_perday, k=3)
     hour_SR <- unlist(Hour_Decimal)
     AUC <- sum(diff(hour_SR)*rollmean(values_SR,2))
     
-    #kWh/m^2/day
+    #kWh/m^2/day 
     AUC <- AUC/1000
     
     #kWh/m^2/day to calories/cm^2/day
