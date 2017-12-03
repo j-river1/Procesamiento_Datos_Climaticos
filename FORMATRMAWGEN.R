@@ -162,6 +162,7 @@ extract_names_data <- function (stations)
     #Data frame
     group <- data.frame(date_min, date_max, station_names)
     colnames(group) <- c("date_min","date_max","station_names") 
+    #FSFSAS
     
     return(group)
 }
