@@ -489,6 +489,9 @@ results <- function(originaldata, restricfile)
     
     result <- data.frame(station_name, variable_names, original_size, aftercleaning_length, diference)
     #colnames(results) <- c("Station_Name", "Variable_Name", "OriginalData_Size", "CleanData_Size", "ErrorData_Size")
+    name <- as.character(originaldata)
+    originaldata <- paste0("..", "/", "Original_Data", "/", name )
+    
     write.table (aftercleaning, file = originaldata, row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
     
     return(result)
