@@ -58,8 +58,11 @@ put_rmawgenformat <- function(files, vari, Start_date, End_date)
     
     #Ordercolumns
     merge_all<-merge_all[,c(length(merge_all), length(merge_all)-1, length(merge_all)-2, rep(1:(length(merge_all)-3)))]  
-    write.csv(merge_all, file = paste(vari, ".csv", sep=""), row.names=FALSE)
     
+    name <- paste(vari, ".csv", sep="")
+    weather_data <- paste0("..", "/", "Rmawgen", "/", name )            
+    #write.csv(merge_all, file = paste(vari, ".csv", sep=""), row.names=FALSE)
+    write.csv(merge_all, file = weather_data, row.names=FALSE)
 }
 
 #missingvalues_rmawgen finds missing values using RMAWGEN package
