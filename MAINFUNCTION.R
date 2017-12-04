@@ -1,14 +1,22 @@
 #Load functions
 source("HOURLYCONTROL.R")
-source("CONVERTHOURLYTODAILY.R")
+source("DAILYCONTROL.R")
+source("FORMATRMAWGEN.R")
+source("RANDOMFOREST.R")
+source("RMAWGEN.R")
 
-#Set working directory where are weathers data.
-setwd("D:/OneDrive - CGIAR/GitHub/Nuevo Codigo Clima/Datos_Sonora/Datos")
-setwd("C:/Users/JCRIVERA/Documents/Codigo_Nuevo_Clima/Datos/Datos_Prueba")
+
+
+
+#The setwd() must be directory where are the source above.
+#Put into the folder Original_Data all weaher files data.
+ 
+
+
 
 #Create folders
 mainDir <- getwd()
-dir.create(file.path(mainDir, "Orginal_Data"), showWarnings = FALSE)
+dir.create(file.path(mainDir, "Original_Data"), showWarnings = FALSE)
 dir.create(file.path(mainDir, "AfterHourlyControl_Data"), showWarnings = FALSE)
 dir.create(file.path(mainDir, "AfterDailyControl_Data"), showWarnings = FALSE)
 dir.create(file.path(mainDir, "RandomForest"), showWarnings = FALSE)
@@ -30,34 +38,47 @@ RH <- c(100,0)
 LONG <- c(-110.119, NA)
 LAT <- c(27.51458, NA)
 TZ <- c("Etc/GMT+7", NA)
-#Start_date <- c("2013-1-1")
-#End_date <- c("2017-12-31")
-
-Start_date <- c("2013-1-1")
-End_date <- c("2017-12-31")
-
 Hourly_restric <- data.frame(TX, TM, SR,RH, LONG, LAT, TZ)
 
+#Variables 
+Start_date <- c("2013-1-1")
+End_date <- c("2017-12-31")
+Percentage <- 0.8
+
+#Change directory Original_Data
+setwd("./Original_Data")
+
+
+#Hourly Control
 final_results <- mclapply(list.files(), results, restricfile = Hourly_restric ,mc.cores=20)
+final_results <- lapply(list.files(), results, restricfile = Hourly_restric)
+
+#Results of Hourly Control
 final_results <- do.call("rbind", final_results)
 colnames(final_results) <- c("Station_Name", "Variable_Name", "OriginalData_Size", "CleanData_Size", "ErrorData_Size")
-write.csv(final_results, file = "Results_HourlyControl.csv")
+write.csv(final_results, file = "../Results/Results_HourlyControl.csv")
 
 
 #Path for hourly files. Copy and paste files to Hourly_Data
-dir.create(file.path(getwd(), "Hourly_Data"), showWarnings = FALSE)
+#dir.create(file.path(getwd(), "Hourly_Data"), showWarnings = FALSE)
 
 
 #Path for hourly files. Copy and paste files to Hourly_Data
-path_hourly <- paste(getwd(), "Hourly_Data", sep = "/")
-move_files_txt(from = getwd(), to = path_hourly)
+#path_hourly <- paste(getwd(), "Hourly_Data", sep = "/")
+#move_files_txt(from = getwd(), to = path_hourly)
 
-#Change Directory
-setwd(path_hourly)
+#Change Directory to After Hourly Data
+#setwd(path_hourly) 
+
+#Change Directory to After Hourly Data
+setwd("../AfterHourlyControl_Data")
+
 
 #Hourly to Daily
-#The percentage is used for checking if a day has enough data.   
-mclapply (list.files(pattern = "\\.txt$"), Hour_to_Day, percentage = 0.8,mc.cores=20)
+#The percentage is for checking if a station has enough data per day.   
+#mclapply (list.files(pattern = "\\.txt$"), Hour_to_Day, percentage = 0.8,mc.cores=20)
+lapply (list.files(), Hour_to_Day, percentage = Percentage)
+
 
 #Change Directory
 path_daily <- paste(getwd(), "Daily_Data", sep = "/")
