@@ -105,16 +105,13 @@ write.csv(final_results, file = paste0("../Results/","Results_DailyControl.csv")
 
 
 
-#Change Directory
-#path_daily <- paste(getwd(), "Daily_Data", sep = "/")
-#setwd(path_daily)
+
 
 #Change Directory to After Daily Data
 setwd("../AfterDailyControl_Data")
 
 
-#Path for files with Rmwagen format. Copy and paste files to Rmwagen
-#dir.create(file.path(getwd(), "Rmawgen"), showWarnings = FALSE)
+
 
 #File with format for using  Rmwagen
 put_rmawgenformat(list.files(), 'TX', Start_date, End_date)
@@ -124,8 +121,8 @@ put_rmawgenformat(list.files(), 'P', Start_date, End_date)
 
 #Using Rmwagen 
 setwd("../Rmawgen")
-graph_all <- function(listFiles, resumefile, variable_rmw, variable_plot)
 graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MAX", 'Temperatura_Máxima')
+graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MIN", 'Temperatura_Mínima')
 
 
 #move files to Rmawgen folder

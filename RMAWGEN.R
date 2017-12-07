@@ -33,43 +33,36 @@ generate_missing_values <- function (listFiles, resumefile, variable)
     
     if(variable=='TEMPERATURE_MIN')
     {
-        generator_values <- lapply(station_info[1:3], applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=2)
+        generator_values <- lapply(station_info, applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=2)
         
     }    
     
     if(variable=='PRECIPITATION')
     {
         #Each 3 stations for using precipitation.
-        station_two <- do.call("rbind", station_info[1:3])
-        chunk <- 3
-        n <- nrow(station_two)
-        r  <- rep(1:ceiling(n/chunk),each=chunk)[1:n]
-        station_info <- split(station_two,r) 
+        #station_two <- do.call("rbind", station_info[1:3])
+        #chunk <- 3
+        #n <- nrow(station_two)
+        #r  <- rep(1:ceiling(n/chunk),each=chunk)[1:n]
+        #station_info <- split(station_two,r) 
         
         
         #Name files
-        generator_values <- lapply(station_info[11], applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
+         generator_values <- lapply(station_info, applying_rmwagen, station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
         
+        # applying_rmwagen_error <- function (station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
+        #{
+        #     tryCatch (applying_rmwagen(station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3),
+        #               error = function (e) {print("asda")}
+        #               )
+             
+             
+             
+        #}
+        #generator_values <- lapply(station_info, applying_rmwagen_error, station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
+         
     }
-    
-    
-    #TEMPERATURE_MAX <- read.csv(list.files()[which(list.files()=="TX.csv")], header=T)
-    #TEMPERATURE_MIN <- read.csv(list.files()[which(list.files()=="TM.csv")], header=T)
-    #PRECIPITATION <-   read.csv(list.files()[which(list.files()=="P.csv")], header= T)
-    
-    #station_info <- choose_stations(list.files()[1])
-    
-    #station_info <- choose_stations(resumefile)
-    #Menu. Temperatura Maxima 1
-    #      Temperatura Minima 2
-    #      Precipitation      3
-    #generator_missing_temperaMax <- lapply(station_info[3], applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=1)
-    #generator_missing_temperaMin <- lapply(station_info[1], applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION,  menu=2)
-    #generator_missing_precipitation <- lapply(station_info[1], applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION,  menu=3)
-    
-    
-    
-    
+       
     
     return(generator_values)
 }
@@ -130,34 +123,12 @@ applying_rmwagen <- function (info_station, TEMPERATURE_MAX, TEMPERATURE_MIN, PR
     
     if(menu == 3)
     {
-        #Temperature as exogenous variable
-        exogen_sim <- cbind(generation00_temp$output$Tx_gen,generation00_temp$output$Tn_gen)
-        exogen_sim <- cbind(generationTemperature$out$Tx_gen,generationTemperature$out$Tn_gen)
-        names(exogen_sim) <- cbind(paste(names(generationTemperature$out$Tx_gen),"_Tx",sep=""),paste(names(generationTemperature$out$Tn_gen),"_Tn",sep=""))
         
-        exogen <- cbind(generation00_temp$input$Tx_mes,generation00_temp$input$Tn_mes)
-        exogen <- cbind(generationTemperature$input$Tx_mes,generationTemperature$input$Tn_mes)
-        
-        names(exogen) <- cbind(paste(names(generation00_temp$input$Tx_mes),"_Tx",sep=""),paste(names(generation00_temp$input$Tn_mes),"_Tn",sep=""))
-        names(exogen) <- cbind(paste(names(generationTemperature$input$Tx_mes),"_Tx",sep=""),paste(names(generationTemperature$input$Tn_mes),"_Tn",sep=""))
-        
-        #generation_prec <- ComprehensivePrecipitationGenerator(station=stationUSE,
-        #                                                         prec_all=precipitation,
-        #                                                         year_min=year_min,
-        #                                                         year_max=year_max,
-        #                                                         exogen=exogen,
-        #                                                         exogen_sim=exogen_sim,
-        #                                                         p=5,n_GPCA_iteration=n_GPCA_iter_prec,
-        #                                                         n_GPCA_iteration_residuals=n_GPCA_iteration_residuals_prec,
-        #                                                         sample="monthly",valmin=valmin,extremes=TRUE,no_spline = TRUE,
-        #                                                         activateVARselect = FALSE)
-        
-        generation_prec <- ComprehensivePrecipitationGenerator(
+       generation_prec <- ComprehensivePrecipitationGenerator(
             station=station,
             prec_all=PRECIPITATION,
             year_min=year_min,
             year_max=year_max,
-            exogen=exogen,
             p= 3,
             exogen_sim=exogen_sim ,
             exogen = NULL,
@@ -167,35 +138,11 @@ applying_rmwagen <- function (info_station, TEMPERATURE_MAX, TEMPERATURE_MIN, PR
             no_spline = FALSE,
             leap = TRUE)
         
-        #real_data <- generation_prec$prec_mes
-        #fill_data <- generation_prec$prec_gen
+        real_data <- generation_prec$prec_mes
+        fill_data <- generation_prec$prec_gen
         
-        real_data <- PRECIPITATION[c(station, "year")]
-        fill_data <- PRECIPITATION[c(station, "year")]
         
-        real_data <- subset(real_data, year >=year_min  & year <=year_max)
-        fill_data <- subset(fill_data, year >=year_min  & year <=year_max)
-        
-        real_data <- real_data[,-which(colnames(real_data)=="year")]
-        fill_data <- fill_data[,-which(colnames(fill_data)=="year")]
-        
-        #nrow_realdata <- nrow(real_data)
-        #nrow_filldata <- nrow(fill_data)
-        
-        #if(nrow_realdata < nrow_filldata) 
-        #{
-        # n <- nrow_filldata - nrow_realdata
-        #  fill_data <- real_data[-rep(1:n),]
-        #  All_data <-All_data[-rep(1:n)]
-        #}
-        
-        #if(nrow_filldata < nrow_realdata)
-        #{
-        # n <- nrow_realdata - nrow_filldata
-        #real_data <- fill_data[--rep(1:n),]
-        #All_data <-All_data[-rep(1:n)]
-        #}
-        
+
     }
     
     result <- list(real_data= real_data, estimated_data = fill_data, date=All_data)
