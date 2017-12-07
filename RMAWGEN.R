@@ -251,8 +251,6 @@ graph_station <- function (Station_table, variable)
     NAs <-  which((is.na(real_data=="NA"))==TRUE)
     real_data[NAs] <- estimated_data[NAs]
     
-    #dsgkasdjgdfkkjx1 <- runif(length(NAs), 0, 10)
-    #real_data[NAs] <- x1
     
     real_dat <- cbind.data.frame(dates, real_data)
     estimated_dat <- cbind.data.frame(dates, estimated_data)
@@ -268,11 +266,11 @@ graph_station <- function (Station_table, variable)
     grafica$Datos[NAs] <- c("Datos_Estimados")
     
     #Graph
-    #jpeg(paste0(paste(name,variable, sep="_"),".jpg"))
     graph <- ggplot(data=grafica, aes(x=Dates, y=Value, col=Datos)) + geom_point() +ggtitle(paste0(name,"\n",variable)) + theme(plot.title = element_text(hjust = 0.5)) + ylab(y) + xlab("Dias")
-    ggsave(paste0(paste(name,variable, sep="_"),".pdf"), plot=graph)
-    #name <- paste0(paste(name,variable, sep="_"),".pdf")
-    #dev.off() 
+    name <- paste0(paste(name,variable, sep="_"),".pdf")
+    namefile <-  paste("..", "/", "Graphics", "/", name)
+    ggsave(namefile, plot=graph)
+    #ggsave(paste0(paste(name,variable, sep="_"),".pdf"), plot=graph)
     
     #return(name)
     #write.table (aftercleaning, file = originaldata, row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
@@ -312,9 +310,13 @@ graph_station <- function (Station_table, variable)
         namefile = "RH"
     }
     
+    name <- paste0(name,"_", namefile, ".txt")
+    weather_data <- paste0(".", "/", "Files_By_Station", "/", name )   
     
-    write.table(real_dat, file = paste0(name,"_", namefile, ".txt"), row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
     
+   # write.table(real_dat, file = paste0(name,"_", namefile, ".txt"), row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
+   write.table(real_dat, file = weather_data, row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
+   
 }
 
 #generate_missing_values <- function (listFiles, resumefile, variable)

@@ -258,3 +258,30 @@ SR_hourlytodaily <- function (data_perday, k=3)
     return(AUC)
 }
 
+#info_station compute the overall results after daily data 
+#Arguments      file. Hourly data 
+#               percentage. percentage for acceptable day
+
+info_station<- function(file, percentage)
+{
+    station_name <- split_name(file)[1]
+    variable <- split_name(file)[2]
+    
+    read_file <- convert_units(file, date_format="%Y-%m-%d")
+    days <- sort(read_file$Date)
+    
+    star_day<- days[1]
+    end_day <- days[length(days)]
+    
+    numbe_days <- as.Date(as.character(end_day), format="%Y-%m-%d")-
+        as.Date(as.character(star_day), format="%Y-%m-%d")
+    
+    numbe_days <- as.double(numbe_days)
+    
+    acceptable_days <- Check_Day_Station(file, percentage)
+    acceptable_days <- length(acceptable_days)
+    
+    result <- data.frame(station_name, variable, dia_inicio, end_day, numbe_days, acceptable_days, percentage)
+    
+    return(result)
+}

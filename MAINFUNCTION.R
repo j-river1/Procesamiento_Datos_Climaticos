@@ -24,7 +24,8 @@ dir.create(file.path(mainDir, "Rmawgen"), showWarnings = FALSE)
 dir.create(file.path(mainDir, "Graphics"), showWarnings = FALSE)
 dir.create(file.path(mainDir, "Results"), showWarnings = FALSE)
 dir.create(file.path(mainDir, "Final_Data"), showWarnings = FALSE)
-
+mainDir <- paste0(mainDir,"/", "Rmawgen" )
+dir.create(file.path(mainDir, "Files_By_Station" ), showWarnings = FALSE)
 
 
 
@@ -50,7 +51,7 @@ setwd("./Original_Data")
 
 
 #Hourly Control
-final_results <- mclapply(list.files(), results, restricfile = Hourly_restric ,mc.cores=20)
+#final_results <- mclapply(list.files(), results, restricfile = Hourly_restric ,mc.cores=20)
 final_results <- lapply(list.files(), results, restricfile = Hourly_restric)
 
 #Results of Hourly Control
@@ -79,18 +80,32 @@ setwd("../AfterHourlyControl_Data")
 #mclapply (list.files(pattern = "\\.txt$"), Hour_to_Day, percentage = 0.8,mc.cores=20)
 lapply (list.files(), Hour_to_Day, percentage = Percentage)
 
+#Results Daily Control
+results <- lapply(list.files(), info_station, percentage=Percentage)
+final_results <- do.call("rbind", results)
+colnames(final_results) <- c("Station_Name", "Variable_Name", "Star_Date", "End_Data", "Total_Days", "Acceptable_Days","Percentage" )
+write.csv(final_results, file = paste0("../Results/","Results_DailyControl.csv") )
+
+
 
 #Change Directory
-path_daily <- paste(getwd(), "Daily_Data", sep = "/")
-setwd(path_daily)
+#path_daily <- paste(getwd(), "Daily_Data", sep = "/")
+#setwd(path_daily)
+
+#Change Directory to After Daily Data
+setwd("../AfterDailyControl_Data")
+
 
 #Path for files with Rmwagen format. Copy and paste files to Rmwagen
-dir.create(file.path(getwd(), "Rmawgen"), showWarnings = FALSE)
+#dir.create(file.path(getwd(), "Rmawgen"), showWarnings = FALSE)
 
-#Variables para Rmwagen
-put_rmawgenformat(list.files(pattern = "\\.txt$"), 'TX', Start_date, End_date)
-put_rmawgenformat(list.files(pattern = "\\.txt$"), 'TM', Start_date, End_date)
-put_rmawgenformat(list.files(pattern = "\\.txt$"), 'P', Start_date, End_date)
+#File with format for using  Rmwagen
+put_rmawgenformat(list.files(), 'TX', Start_date, End_date)
+put_rmawgenformat(list.files(), 'TM', Start_date, End_date)
+put_rmawgenformat(list.files(), 'P', Start_date, End_date)
+
+
+#Using Rmwagen 
 
 
 #move files to Rmawgen folder
