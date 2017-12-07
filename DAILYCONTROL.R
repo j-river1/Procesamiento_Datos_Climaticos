@@ -281,7 +281,7 @@ info_station<- function(file, percentage)
     acceptable_days <- Check_Day_Station(file, percentage)
     acceptable_days <- length(acceptable_days)
     
-    result <- data.frame(station_name, variable, dia_inicio, end_day, numbe_days, acceptable_days, percentage)
+    result <- data.frame(station_name, variable, star_day, end_day, numbe_days, acceptable_days, percentage)
     
     return(result)
 }

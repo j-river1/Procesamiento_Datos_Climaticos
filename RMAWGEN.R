@@ -1,5 +1,3 @@
-library(RMAWGEN)
-library(ggplot2)
 
 #list.files()[1] resumefile
 #list.files()[130]
@@ -30,7 +28,7 @@ generate_missing_values <- function (listFiles, resumefile, variable)
     if(variable=='TEMPERATURE_MAX')
     {
         #Name files
-        generator_values <- lapply(station_info[1:3], applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=1)
+        generator_values <- lapply(station_info, applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=1)
     }
     
     if(variable=='TEMPERATURE_MIN')
@@ -268,7 +266,7 @@ graph_station <- function (Station_table, variable)
     #Graph
     graph <- ggplot(data=grafica, aes(x=Dates, y=Value, col=Datos)) + geom_point() +ggtitle(paste0(name,"\n",variable)) + theme(plot.title = element_text(hjust = 0.5)) + ylab(y) + xlab("Dias")
     name <- paste0(paste(name,variable, sep="_"),".pdf")
-    namefile <-  paste("..", "/", "Graphics", "/", name)
+    namefile <-  paste0("..", "/", "Graphics", "/", name)
     ggsave(namefile, plot=graph)
     #ggsave(paste0(paste(name,variable, sep="_"),".pdf"), plot=graph)
     
@@ -355,8 +353,10 @@ table_graph <- function(list, resumefile)
     #Extract start and end data
     info_station <- read.csv(resumefile, header= TRUE)
     info_station$Station_Name <- as.character(info_station$Station_Name)
-    info_station$Star_Data <- as.Date(info_station$Star_Data, format = "%m/%d/%Y")
-    info_station$End_Data <- as.Date(info_station$End_Data, format = "%m/%d/%Y")
+    #info_station$Star_Data <- as.Date(info_station$Star_Data, format = "%m/%d/%Y")
+    info_station$Star_Data <- as.Date(info_station$Star_Data, format = "%Y-%m-%d")
+    #info_station$End_Data <- as.Date(info_station$End_Data, format = "%m/%d/%Y")
+    info_station$End_Data <- as.Date(info_station$End_Data, format = "%Y-%m-%d")
     
     info_station <- unique(info_station[,c("Station_Name", "Star_Data",  "End_Data" ) ])
     info_station <- subset(info_station, Station_Name %in% colnames(data_real))   

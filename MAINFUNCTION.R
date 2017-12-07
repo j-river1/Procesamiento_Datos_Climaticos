@@ -1,3 +1,20 @@
+#Libraries
+
+library(dplyr)
+library(stringr)
+library(maptools)
+library(parallel)
+library(reshape2)
+library(imputeTS)
+library(plyr)
+library(abind)
+library(zoo)
+library(stringr)
+library(RMAWGEN)
+library(ggplot2)
+
+
+
 #Load functions
 source("HOURLYCONTROL.R")
 source("DAILYCONTROL.R")
@@ -83,7 +100,7 @@ lapply (list.files(), Hour_to_Day, percentage = Percentage)
 #Results Daily Control
 results <- lapply(list.files(), info_station, percentage=Percentage)
 final_results <- do.call("rbind", results)
-colnames(final_results) <- c("Station_Name", "Variable_Name", "Star_Date", "End_Data", "Total_Days", "Acceptable_Days","Percentage" )
+colnames(final_results) <- c("Station_Name", "Variable_Name", "Star_Data", "End_Data", "Total_Days", "Acceptable_Days","Percentage" )
 write.csv(final_results, file = paste0("../Results/","Results_DailyControl.csv") )
 
 
@@ -106,6 +123,9 @@ put_rmawgenformat(list.files(), 'P', Start_date, End_date)
 
 
 #Using Rmwagen 
+setwd("../Rmawgen")
+graph_all <- function(listFiles, resumefile, variable_rmw, variable_plot)
+graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MAX", 'Temperatura_Máxima')
 
 
 #move files to Rmawgen folder
