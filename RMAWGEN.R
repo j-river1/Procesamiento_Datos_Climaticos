@@ -265,9 +265,9 @@ graph_station <- function (Station_table, variable)
     
     #Graph
     graph <- ggplot(data=grafica, aes(x=Dates, y=Value, col=Datos)) + geom_point() +ggtitle(paste0(name,"\n",variable)) + theme(plot.title = element_text(hjust = 0.5)) + ylab(y) + xlab("Dias")
-    name <- paste0(paste(name,variable, sep="_"),".pdf")
-    namefile <-  paste0("..", "/", "Graphics", "/", name)
-    ggsave(namefile, plot=graph)
+    name_grap <- paste0(paste(name,variable, sep="_"),".pdf")
+    nameFile <-  paste0("..", "/", "Graphics", "/", name_grap)
+    ggsave(nameFile, plot=graph)
     #ggsave(paste0(paste(name,variable, sep="_"),".pdf"), plot=graph)
     
     #return(name)
@@ -308,8 +308,9 @@ graph_station <- function (Station_table, variable)
         namefile = "RH"
     }
     
-    name <- paste0(name,"_", namefile, ".txt")
-    weather_data <- paste0(".", "/", "Files_By_Station", "/", name )   
+
+    name_file <- paste0(paste(name,namefile, sep="_"),".txt")
+    weather_data <- paste0(".", "/", "Files_By_Station", "/", name_file )   
     
     
    # write.table(real_dat, file = paste0(name,"_", namefile, ".txt"), row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
