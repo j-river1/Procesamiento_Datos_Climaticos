@@ -48,8 +48,11 @@ generate_missing_values <- function (listFiles, resumefile, variable)
         
         
         #Name files
-         generator_values <- lapply(station_info, applying_rmwagen, station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
-        
+        generator_values <- lapply(station_info, applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=2)
+         
+         
+         
+         
         # applying_rmwagen_error <- function (station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
         #{
         #     tryCatch (applying_rmwagen(station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3),
@@ -123,6 +126,15 @@ applying_rmwagen <- function (info_station, TEMPERATURE_MAX, TEMPERATURE_MIN, PR
     
     if(menu == 3)
     {
+        #Error distribution. Check if precipitation distribuition is biased to zero.  
+        median <- lapply(PRECIPITATION[station], median, na.rm =T)
+        test <- lapply(mediana, function(x) { if (x < 1) {result <- TRUE} else {result <- FALSE}})
+        
+        if(any (test == TRUE))
+        {
+            warning("There is a problem with distribution of Precipitation. This is biased to zero")
+            
+        }
         
        generation_prec <- ComprehensivePrecipitationGenerator(
             station=station,
@@ -130,13 +142,35 @@ applying_rmwagen <- function (info_station, TEMPERATURE_MAX, TEMPERATURE_MIN, PR
             year_min=year_min,
             year_max=year_max,
             p= 3,
-            exogen_sim=exogen_sim ,
-            exogen = NULL,
             n_GPCA_iteration= 10,
-            n_GPCA_iteration_residuals= 10,
+            n_GPCA_iteration_residuals= 0,
             sample = "monthly",
             no_spline = FALSE,
-            leap = TRUE)
+            nscenario = 20)
+       
+       if(generation_prec == -1)
+       {
+           warning("There is a problem with distribution of Precipitation. This is biased to zero")
+           PRECIPITATION[station] <- PRECIPITATION[station] + 1
+           generation_prec <- ComprehensivePrecipitationGenerator(
+               station=station,
+               prec_all=PRECIPITATION,
+               year_min=year_min,
+               year_max=year_max,
+               p= 3,
+               exogen_sim=exogen_sim ,
+               exogen = NULL,
+               n_GPCA_iteration= 10,
+               n_GPCA_iteration_residuals= 10,
+               sample = "monthly",
+               no_spline = FALSE,
+               leap = TRUE)
+           
+           real_data <- generation_prec$prec_mes
+           fill_data <- generation_prec$prec_gen
+           
+       }
+           
         
         real_data <- generation_prec$prec_mes
         fill_data <- generation_prec$prec_gen
