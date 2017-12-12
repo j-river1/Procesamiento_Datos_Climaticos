@@ -1,16 +1,4 @@
 
-#list.files()[1] resumefile
-#list.files()[130]
-
-
-#Making a folder for saving files TX, TM
-
-#generate_missing_values generates missing values
-#Arguments     -weather list of files datas
-#
-
-
-
 #generate_missing_values generates values of all stations using rmawgen.
 #Arguments    -ListFiles. Lisf of files with format for rmawgen 
 #             -resumefile. Lsit with resumen all stations 
@@ -39,30 +27,9 @@ generate_missing_values <- function (listFiles, resumefile, variable)
     
     if(variable=='PRECIPITATION')
     {
-        #Each 3 stations for using precipitation.
-        #station_two <- do.call("rbind", station_info[1:3])
-        #chunk <- 3
-        #n <- nrow(station_two)
-        #r  <- rep(1:ceiling(n/chunk),each=chunk)[1:n]
-        #station_info <- split(station_two,r) 
-        
-        
-        #Name files
-        generator_values <- lapply(station_info, applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=2)
+
+        generator_values <- lapply(station_info, applying_rmwagen, TEMPERATURE_MAX = TEMPERATURE_MAX, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
          
-         
-         
-         
-        # applying_rmwagen_error <- function (station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
-        #{
-        #     tryCatch (applying_rmwagen(station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3),
-        #               error = function (e) {print("asda")}
-        #               )
-             
-             
-             
-        #}
-        #generator_values <- lapply(station_info, applying_rmwagen_error, station_info, TEMPERATURE_MIN= TEMPERATURE_MIN, PRECIPITATION = PRECIPITATION, menu=3)
          
     }
        
@@ -87,16 +54,7 @@ applying_rmwagen <- function (info_station, TEMPERATURE_MAX, TEMPERATURE_MIN, PR
     Start_Data_Sta <- unique(year_min)
     End_Data_Sta <- unique(year_max)
     All_data <- seq(as.Date(paste0(year_min,"-1-1")), as.Date(paste0(year_max, "-12-31")), by="days")
-    
-    #year_min <- as.Date(info_station[[4]]$date_min, "%Y-%m-%d")[1]
-    #year_max <- as.Date(info_station[[4]]$date_max, "%Y-%m-%d")[1]
-    #year_min <- as.numeric(format(year_min, "%Y"))
-    #year_max <- as.numeric(format(year_max, "%Y"))
-    
-    
-    
-    #origin <- unique(as.Date(info_station$date_min, format = "%Y-%m-%d"))
-    #origin <- unique(as.Date(info_station$date_min, format = "%Y-%m-%d"))
+
     
     
     generationTemperature <- ComprehensiveTemperatureGenerator(
@@ -132,50 +90,45 @@ applying_rmwagen <- function (info_station, TEMPERATURE_MAX, TEMPERATURE_MIN, PR
         
         if(any (test == TRUE))
         {
-            warning("There is a problem with distribution of Precipitation. This is biased to zero")
+            warning("There is a problem with distribution of Precipitation. This is very biased to zero")
+            PRECIPITATION[station] <- PRECIPITATION[station] + 1
+            generation_prec <- ComprehensivePrecipitationGenerator(
+                station=station,
+                prec_all=PRECIPITATION,
+                year_min=year_min,
+                year_max=year_max,
+                p= 3,
+                n_GPCA_iteration= 10,
+                n_GPCA_iteration_residuals= 0,
+                sample = "monthly",
+                no_spline = FALSE,
+                nscenario = 20)
+            
+            real_data <- generation_prec$prec_mes - 1
+            fill_data <- generation_prec$prec_gen - 1
             
         }
         
-       generation_prec <- ComprehensivePrecipitationGenerator(
-            station=station,
-            prec_all=PRECIPITATION,
-            year_min=year_min,
-            year_max=year_max,
-            p= 3,
-            n_GPCA_iteration= 10,
-            n_GPCA_iteration_residuals= 0,
-            sample = "monthly",
-            no_spline = FALSE,
-            nscenario = 20)
-       
-       if(generation_prec == -1)
-       {
-           warning("There is a problem with distribution of Precipitation. This is biased to zero")
-           PRECIPITATION[station] <- PRECIPITATION[station] + 1
-           generation_prec <- ComprehensivePrecipitationGenerator(
-               station=station,
-               prec_all=PRECIPITATION,
-               year_min=year_min,
-               year_max=year_max,
-               p= 3,
-               exogen_sim=exogen_sim ,
-               exogen = NULL,
-               n_GPCA_iteration= 10,
-               n_GPCA_iteration_residuals= 10,
-               sample = "monthly",
-               no_spline = FALSE,
-               leap = TRUE)
-           
-           real_data <- generation_prec$prec_mes
-           fill_data <- generation_prec$prec_gen
-           
-       }
-           
+        else 
+        {
+            generation_prec <- ComprehensivePrecipitationGenerator(
+                station=station,
+                prec_all=PRECIPITATION,
+                year_min=year_min,
+                year_max=year_max,
+                p= 3,
+                n_GPCA_iteration= 10,
+                n_GPCA_iteration_residuals= 0,
+                sample = "monthly",
+                no_spline = FALSE,
+                nscenario = 20)
+            
+            real_data <- generation_prec$prec_mes
+            fill_data <- generation_prec$prec_gen 
+            
+        }
         
-        real_data <- generation_prec$prec_mes
-        fill_data <- generation_prec$prec_gen
-        
-        
+
 
     }
     
@@ -238,9 +191,7 @@ graph_station <- function (Station_table, variable)
     colnames(estimated_dat) <- c("Dates", "Value")
     
     #Variable for plot
-    #grafica <- rbind(real_dat, estimated_dat)
     grafica <- real_dat
-    #grafica$Datos <- c(rep("Datos_Reales", nrow(real_dat)), rep("Datos_Estimados", nrow(estimated_dat)))
     grafica$Datos <- c(rep("Datos_Reales", nrow(real_dat)))
     grafica$Datos[NAs] <- c("Datos_Estimados")
     
@@ -249,10 +200,7 @@ graph_station <- function (Station_table, variable)
     name_grap <- paste0(paste(name,variable, sep="_"),".pdf")
     nameFile <-  paste0("..", "/", "Graphics", "/", name_grap)
     ggsave(nameFile, plot=graph)
-    #ggsave(paste0(paste(name,variable, sep="_"),".pdf"), plot=graph)
-    
-    #return(name)
-    #write.table (aftercleaning, file = originaldata, row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
+
     
     if(variable == 'Temperatura_Máxima' )
     {
@@ -294,7 +242,7 @@ graph_station <- function (Station_table, variable)
     weather_data <- paste0(".", "/", "Files_By_Station", "/", name_file )   
     
     
-   # write.table(real_dat, file = paste0(name,"_", namefile, ".txt"), row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
+
    write.table(real_dat, file = weather_data, row.names = FALSE, quote = FALSE, sep = "\t", col.names = TRUE)
    
 }
@@ -335,9 +283,7 @@ table_graph <- function(list, resumefile)
     #Extract start and end data
     info_station <- read.csv(resumefile, header= TRUE)
     info_station$Station_Name <- as.character(info_station$Station_Name)
-    #info_station$Star_Data <- as.Date(info_station$Star_Data, format = "%m/%d/%Y")
     info_station$Star_Data <- as.Date(info_station$Star_Data, format = "%Y-%m-%d")
-    #info_station$End_Data <- as.Date(info_station$End_Data, format = "%m/%d/%Y")
     info_station$End_Data <- as.Date(info_station$End_Data, format = "%Y-%m-%d")
     
     info_station <- unique(info_station[,c("Station_Name", "Star_Data",  "End_Data" ) ])
