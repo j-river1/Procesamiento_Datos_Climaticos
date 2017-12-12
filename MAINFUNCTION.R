@@ -77,17 +77,6 @@ colnames(final_results) <- c("Station_Name", "Variable_Name", "OriginalData_Size
 write.csv(final_results, file = "../Results/Results_HourlyControl.csv")
 
 
-#Path for hourly files. Copy and paste files to Hourly_Data
-#dir.create(file.path(getwd(), "Hourly_Data"), showWarnings = FALSE)
-
-
-#Path for hourly files. Copy and paste files to Hourly_Data
-#path_hourly <- paste(getwd(), "Hourly_Data", sep = "/")
-#move_files_txt(from = getwd(), to = path_hourly)
-
-#Change Directory to After Hourly Data
-#setwd(path_hourly) 
-
 #Change Directory to After Hourly Data
 setwd("../AfterHourlyControl_Data")
 
@@ -104,13 +93,8 @@ colnames(final_results) <- c("Station_Name", "Variable_Name", "Star_Data", "End_
 write.csv(final_results, file = paste0("../Results/","Results_DailyControl.csv") )
 
 
-
-
-
 #Change Directory to After Daily Data
 setwd("../AfterDailyControl_Data")
-
-
 
 
 #File with format for using  Rmwagen
@@ -123,6 +107,7 @@ put_rmawgenformat(list.files(), 'P', Start_date, End_date)
 setwd("../Rmawgen")
 graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MAX", 'Temperatura_Máxima')
 graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MIN", 'Temperatura_Mínima')
+graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "PRECIPITATION", "Precipitación")
 
 
 #move files to Rmawgen folder
