@@ -118,6 +118,7 @@ match_files(list.files("./Files_By_Station"), "../../Results/Results_DailyContro
 
 
 
+
 #move files to Rmawgen folder
 Rmawgen <- paste(getwd(), "Rmawgen", sep = "/")
 move_files_txt(from = getwd(), to = Rmawgen, format = "\\.csv$")
