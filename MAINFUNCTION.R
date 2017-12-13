@@ -21,6 +21,7 @@ source("DAILYCONTROL.R")
 source("FORMATRMAWGEN.R")
 source("RANDOMFOREST.R")
 source("RMAWGEN.R")
+source("FORMATRANDOMFOREST.R")
 
 
 
@@ -108,6 +109,13 @@ setwd("../Rmawgen")
 graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MAX", 'Temperatura_Máxima')
 graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MIN", 'Temperatura_Mínima')
 graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "PRECIPITATION", "Precipitación")
+
+
+#Moving the files
+setwd("./Files_By_Station")
+move_files_SR_HR()
+match_files(list.files("./Files_By_Station"), "../../Results/Results_DailyControl.csv")
+
 
 
 #move files to Rmawgen folder
