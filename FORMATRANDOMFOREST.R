@@ -42,19 +42,6 @@ label_for_files <- function (name)
   return(file) 
 } 
 
-#Read
-
-#leer_label <- function(name)
-#{
-#  file <- read.table(name, header=T)
-#  variable <-  split_name(name)[2]
-#  names(file) <- c("Date", variable)
-  
-#  return(file) 
-  
-#}
-  
-#move files SR and HR from Daily Hour to Files_by_station
 
 move_files_SR_HR <- function ()
 {
@@ -88,8 +75,8 @@ copy_paste_files <- function(namefile)
 
 
 
-w <- lapply(files, function(x){read.table(x, header=TRUE)})
-
-lapply(name_estaciones, merge_files, listfiles =list.files() )
+# w <- lapply(files, function(x){read.table(x, header=TRUE)})
+# 
+# lapply(name_estaciones, merge_files, listfiles =list.files() )
 
 
