@@ -12,6 +12,9 @@ library(zoo)
 library(stringr)
 library(RMAWGEN)
 library(ggplot2)
+library(randomForest)
+library(RCurl)
+library(data.table)
 
 
 
@@ -44,6 +47,9 @@ dir.create(file.path(mainDir, "Results"), showWarnings = FALSE)
 dir.create(file.path(mainDir, "Final_Data"), showWarnings = FALSE)
 mainDir <- paste0(mainDir,"/", "Rmawgen" )
 dir.create(file.path(mainDir, "Files_By_Station" ), showWarnings = FALSE)
+mainDir <- paste0(mainDir,"/", "RandomForest" )
+dir.create(file.path(mainDir, "SR" ), showWarnings = FALSE)
+dir.create(file.path(mainDir, "RH" ), showWarnings = FALSE)
 
 
 
@@ -111,10 +117,18 @@ graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv
 graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "PRECIPITATION", "Precipitación")
 
 
-#Moving the files
+#Moving and merge files
 setwd("./Files_By_Station")
 move_files_SR_HR()
 match_files(list.files("./Files_By_Station"), "../../Results/Results_DailyControl.csv")
+
+#Using Random forest 
+setwd("../../Randomforest/")
+graph_all_SR_RH(list.files(pattern = "\\.txt$"), "Humedad_Relativa")
+graph_all_SR_RH(list.files(pattern = "\\.txt$"), "Radiación_Solar")
+
+
+
 
 
 
