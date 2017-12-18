@@ -14,7 +14,6 @@ read_files <- function (listfiles)
                                                                 write.table(y[[i]], file = paste0("../Final_Data/", name, ".txt" ))
                                                                 }, y=files_merge, n=names(files_merge))
  
-    return ( files_merge)    
 }
 
 
