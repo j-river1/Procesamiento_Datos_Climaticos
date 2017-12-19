@@ -127,6 +127,8 @@ setwd("../../Randomforest/")
 graph_all_SR_RH(list.files(pattern = "\\.txt$"), "Humedad_Relativa")
 graph_all_SR_RH(list.files(pattern = "\\.txt$"), "Radiación_Solar")
 
+#Moving final data
+read_files(list.files(pattern=".txt"))
 
 
 
