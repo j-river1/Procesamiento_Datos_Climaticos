@@ -51,10 +51,16 @@ mainDir <- paste0(mainDir,"/", "RandomForest" )
 dir.create(file.path(mainDir, "SR" ), showWarnings = FALSE)
 dir.create(file.path(mainDir, "RH" ), showWarnings = FALSE)
 
+#Choose Time Data
+#If the time is in terms of hours so TimeData = 1
+#If the time is in terms of days so TimeData = 2
 
+TimeData <- 2 
 
-
-#Restrictions as data frame
+if(TimeData == 1)
+{
+    
+#Hourly Restrictions as data frame
 Variables <- c("Vmin", "Vmax")
 TX <- c(41,0)
 TM <- c(41,0)
@@ -99,6 +105,12 @@ final_results <- do.call("rbind", results)
 colnames(final_results) <- c("Station_Name", "Variable_Name", "Star_Data", "End_Data", "Total_Days", "Acceptable_Days","Percentage" )
 write.csv(final_results, file = paste0("../Results/","Results_DailyControl.csv") )
 
+}
+
+if(TimeData == 2)
+{
+    
+}
 
 #Change Directory to After Daily Data
 setwd("../AfterDailyControl_Data")
