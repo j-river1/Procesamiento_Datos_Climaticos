@@ -129,11 +129,16 @@ write.csv(final_results, file = paste0("../Results/","Results_DailyControl.csv")
 if(TimeData == 2)
 {
     
-    file.copy(from=list.files(path= "../Original_Data"), to ="../AfterDailyControl_Data") 
-    results <- lapply(list.files(), info_station, percentage=Percentage)
+   
+    setwd("./Original_Data")
+    file.copy(from=list.files(), to ="../AfterDailyControl_Data")
+    setwd("..")
+    
+    results <- lapply(list.files(path= "./AfterDailyControl_Data"), info_station, percentage=Percentage, typefile = 1, sepa= " ", time =2)
     final_results <- do.call("rbind", results)    
     colnames(final_results) <- c("Station_Name", "Variable_Name", "Star_Data", "End_Data")
     write.csv(final_results, file = paste0("../Results/","Results_DailyControl.csv") )
+    
     
     
 }
