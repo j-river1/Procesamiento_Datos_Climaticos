@@ -301,7 +301,7 @@ info_station<- function(file, percentage, time = 1)
     return(result)
 }
 
-
+#results <- lapply(list.files(path= "./AfterDailyControl_Data"), info_station, percentage=Percentage, typefile = 1, sepa= " ", time =2)
 daily_control <- function (daily_restric, file, typefile, sepa )
 {
     
@@ -317,11 +317,29 @@ daily_control <- function (daily_restric, file, typefile, sepa )
     
     if(variable == "RH")
     {
-        values_out <- which(read_file$variable < daily_res$RH[1] || read_file$variable > daily_res$RH[2])
-        warning("There is a value out of limits ", read_file[values_out,] )
+        values_out <- which(read_file$Value < daily_res$RH[2] || read_file$Value > daily_res$RH[1])
+        
+        if(length(values_out)!=0)
+        {
+            read_file$Value[values_out] <- NA
+            warning("There is a value out of limits ", read_file[values_out,] )
+        }
+        
+    }
+    
+    if(variable == "TX")
+    {
+        values_out <- which(read_file$Value < daily_res$TX[2] || read_file$Value > daily_res$TX[1])
+        
+        if(length(values_out)!=0)
+        {
+            read_file$Value[values_out] <- NA
+            warning("There is a value out of limits ", read_file[values_out,] )
+        }
+        
     }
     
     
-    
+    return(read_file)
     
 }
