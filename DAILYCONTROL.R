@@ -300,3 +300,28 @@ info_station<- function(file, percentage, time = 1)
 
     return(result)
 }
+
+
+daily_control <- function (daily_restric, file, typefile, sepa )
+{
+    
+    #Daily Restrictions
+    daily_res <- daily_restric
+    
+    #Variable
+    splitname <- split_name(file)
+    variable <- splitname[2]  
+    
+    #ReadFile
+    read_file <- convert_units(file, date_format="%Y-%m-%d", typefile, sepa )
+    
+    if(variable == "RH")
+    {
+        values_out <- which(read_file$variable < daily_res$RH[1] || read_file$variable > daily_res$RH[2])
+        warning("There is a value out of limits ", read_file[values_out,] )
+    }
+    
+    
+    
+    
+}
