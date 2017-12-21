@@ -261,8 +261,9 @@ SR_hourlytodaily <- function (data_perday, k=3)
 #info_station compute the overall results after daily data 
 #Arguments      file. Hourly data 
 #               percentage. percentage for acceptable day
+#               time. If data is hourly so time = 1. If data is daily so time = 0
 
-info_station<- function(file, percentage)
+info_station<- function(file, percentage, time = 1)
 {
     station_name <- split_name(file)[1]
     variable <- split_name(file)[2]
@@ -278,10 +279,24 @@ info_station<- function(file, percentage)
     
     numbe_days <- as.double(numbe_days)
     
-    acceptable_days <- Check_Day_Station(file, percentage)
-    acceptable_days <- length(acceptable_days)
+#     acceptable_days <- Check_Day_Station(file, percentage)
+#     acceptable_days <- length(acceptable_days)
+#     
+#     result <- data.frame(station_name, variable, star_day, end_day, numbe_days, acceptable_days, percentage)
+#     
+    if(time = 1)
+    {
+        acceptable_days <- Check_Day_Station(file, percentage)
+        acceptable_days <- length(acceptable_days)
     
-    result <- data.frame(station_name, variable, star_day, end_day, numbe_days, acceptable_days, percentage)
+         result <- data.frame(station_name, variable, star_day, end_day, numbe_days, acceptable_days, percentage)
+    }
+    if (time = 2)
+    {
     
+    result <- data.frame(station_name, variable, star_day, end_day)
+    }
+
+
     return(result)
 }
