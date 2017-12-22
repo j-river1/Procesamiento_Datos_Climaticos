@@ -134,6 +134,11 @@ choose_stations <- function(file)
     file <- read.csv(file, header = T)
     #file$Star_Data <- as.Date(file$Star_Data, "%m/%d/%Y")
     #file$End_Data <- as.Date(file$End_Data, "%m/%d/%Y")
+    namefile <- paste0(getwd(), "/AfterDailyControl_Data/", files)
+    name <- paste0(getwd(), "/Results/", file)
+    file <- read.csv(name, header = T)
+    
+    
     
     file$Star_Data <- as.Date(as.character(file$Star_Data), "%Y-%m-%d")
     file$End_Data <- as.Date(file$End_Data, "%Y-%m-%d")
