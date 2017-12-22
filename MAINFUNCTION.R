@@ -156,12 +156,16 @@ put_rmawgenformat(list.files(), 'TX', Start_date, End_date)
 put_rmawgenformat(list.files(), 'TM', Start_date, End_date)
 put_rmawgenformat(list.files(), 'P', Start_date, End_date)
 
-
 #Using Rmwagen 
-setwd("../Rmawgen")
-graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MAX", 'Temperatura_Máxima')
-graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MIN", 'Temperatura_Mínima')
-graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "PRECIPITATION", "Precipitación")
+#setwd("../Rmawgen")
+# graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MAX", 'Temperatura_Maxima')
+# graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MIN", 'Temperatura_Minima')
+# graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "PRECIPITATION", "Precipitacion")
+
+graph_all (list.files(pattern = "\\.csv$",path="./Rmawgen"), "./Results/Results_DailyControl.csv", "TEMPERATURE_MAX", 'Temperatura_Máxima')
+graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "TEMPERATURE_MIN", 'Temperatura_Minima')
+graph_all (list.files(pattern = "\\.csv$"), "../Results/Results_DailyControl.csv", "PRECIPITATION", "Precipitacion")
+
 
 
 #Moving and merge files
