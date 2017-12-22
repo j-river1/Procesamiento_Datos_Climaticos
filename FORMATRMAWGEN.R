@@ -10,8 +10,10 @@ read_files <- function (files, variable, Start_date, End_date)
     if(split_name(files)[2] == variable)
     {
         #Read file 
-        read_file <- read.table(files, header = T)
+        namefile <- paste0(getwd(), "/AfterDailyControl_Data/", files)
+        read_file <- read.table(namefile, header = T, sep = sepa )
         
+               
         #Change colnames
         colnames(read_file) <- c("Date", as.character(split_name(files)[1]))
         read_file$Date <- as.Date(read_file$Date, format = "%Y-%m-%d")
@@ -60,7 +62,7 @@ put_rmawgenformat <- function(files, vari, Start_date, End_date)
     merge_all<-merge_all[,c(length(merge_all), length(merge_all)-1, length(merge_all)-2, rep(1:(length(merge_all)-3)))]  
     
     name <- paste(vari, ".csv", sep="")
-    weather_data <- paste0("..", "/", "Rmawgen", "/", name )            
+    weather_data <- paste0(".", "/", "Rmawgen", "/", name )            
     #write.csv(merge_all, file = paste(vari, ".csv", sep=""), row.names=FALSE)
     write.csv(merge_all, file = weather_data, row.names=FALSE)
 }
