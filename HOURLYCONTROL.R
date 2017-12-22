@@ -50,7 +50,23 @@ put_format<- function(originalfile, date_format="%Y%m%d")
     
     
     #Read file
-    fileoriginal <- read.table(originalfile, header= TRUE, sep="\t")
+    #fileoriginal <- read.table(originalfile, header= TRUE, sep="\t")
+    
+    if(typefile == 1)
+    {
+        namefile <- paste0(getwd(), "/AfterDailyControl_Data/", originalfile)
+        fileoriginal <- read.table(namefile, header= TRUE, sep=sepa)
+    }
+    
+    else 
+    {
+        #Read file
+        #fileoriginal <- read.table(originalfile, header= TRUE, sep="\t")
+        fileoriginal <- read.table(originalfile, header= TRUE, sep=sepa)
+    }
+    
+    
+    
     
     
     #Check if file is daily or hourly
