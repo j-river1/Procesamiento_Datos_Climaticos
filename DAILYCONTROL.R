@@ -340,6 +340,44 @@ daily_control <- function (daily_restric, file, typefile, sepa )
     }
     
     
+    if(variable == "TM")
+    {
+        values_out <- which(read_file$Value < daily_res$TM[2] || read_file$Value > daily_res$TM[1])
+        
+        if(length(values_out)!=0)
+        {
+            read_file$Value[values_out] <- NA
+            warning("There is a value out of limits ", read_file[values_out,] )
+        }
+        
+    }
+    
+    if(variable == "SR")
+    {
+        values_out <- which(read_file$Value < daily_res$SR[2] || read_file$Value > daily_res$SR[1])
+        
+        if(length(values_out)!=0)
+        {
+            read_file$Value[values_out] <- NA
+            warning("There is a value out of limits ", read_file[values_out,] )
+        }
+        
+    }
+    
+    if(variable == "P")
+    {
+        values_out <- which(read_file$Value < daily_res$P[2] || read_file$Value > daily_res$P[1])
+        
+        if(length(values_out)!=0)
+        {
+            read_file$Value[values_out] <- NA
+            warning("There is a value out of limits ", read_file[values_out,] )
+        }
+        
+    }
+    
+    
+    write.table(read_file, paste0("./AfterDailyControl_Data/", file), row.names = FALSE)
     return(read_file)
     
 }
